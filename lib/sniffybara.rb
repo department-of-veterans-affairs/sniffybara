@@ -1,5 +1,4 @@
 require "capybara"
-require 'capybara/poltergeist'
 require 'sinatra/base'
 
 module Sniffybara
