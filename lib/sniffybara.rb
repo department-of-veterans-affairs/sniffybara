@@ -64,7 +64,7 @@ module Sniffybara
                   "type": msg.type,
                   "msg": msg.msg,
                   "tagName": msg.element.tagName.toLowerCase(),
-                  "id": msg.element.id
+                  "elementId": msg.element.id
                 };
               }) || [];
             });
@@ -91,9 +91,9 @@ module Sniffybara
     def format_accessibility_issues(issues)
       issues.inject("") do |result, issue|
         next result if issue["type"] == MESSAGE_TYPES[:notice]
-
+  
         result += "<#{issue["tagName"]}"
-        result += issue["id"] ? ">\n" : " id = '#{issue["id"]}'>\n"
+        result += issue["elementId"] ? " id='#{issue["elementId"]}'>\n" : ">\n"
         result += "#{issue["msg"]}\n\n"
       end
     end
