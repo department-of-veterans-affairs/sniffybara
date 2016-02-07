@@ -27,6 +27,7 @@ module Sniffybara
 
     def initialize(*args)
       super(args)
+      puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
       Thread.new do
         AssetServer.run!    
