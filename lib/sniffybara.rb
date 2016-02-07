@@ -58,7 +58,7 @@ module Sniffybara
           htmlcs.src = "http://localhost:#{Sniffybara::AssetServer::PORT}/htmlcs.js";
           htmlcs.async = true;
           htmlcs.onreadystatechange = htmlcs.onload = function() {
-            window.HTMLCS.process('WCAG2AAA', window.document, function() {
+            window.HTMLCS.process('WCAG2AA', window.document, function() {
               window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
                 return {
                   "type": msg.type,
