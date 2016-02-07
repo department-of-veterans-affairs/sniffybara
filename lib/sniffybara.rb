@@ -3,6 +3,7 @@ require 'capybara/poltergeist'
 require 'rainbow'
 require 'sinatra/base'
 
+
 module Sniffybara
   class PageNotAccessibleError < StandardError; end
 
@@ -10,6 +11,7 @@ module Sniffybara
   class AssetServer < Sinatra::Application
     PORT = 9006
     set :port, PORT
+    set :logging, false
 
     def path_to_htmlcs
       File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')
@@ -20,7 +22,18 @@ module Sniffybara
     end
   end
 
+  module NodeOverrides
+    def click
+      super
+      Sniffybara::Driver.current_driver.process_accessibility_issues
+    end
+  end
+
   class Driver < Capybara::Poltergeist::Driver
+    class << self
+      attr_accessor :current_driver
+    end
+
     MESSAGE_TYPES = {
       error: 1,
       warning: 2,
@@ -30,6 +43,8 @@ module Sniffybara
     def initialize(*args)
       super(args)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
+
+      Capybara::Poltergeist::Node.prepend(NodeOverrides)
 
       Thread.new do
         AssetServer.run!    
@@ -63,7 +78,9 @@ module Sniffybara
       result
     end
 
-    def process_accessibility_issues(issues)
+    def process_accessibility_issues
+      issues = find_accessibility_issues
+
       issues.each do |issue|
         if issue["type"] == MESSAGE_TYPES[:error] || issue["type"] == MESSAGE_TYPES[:warning]
           fail PageNotAccessibleError.new(format_accessibility_issues(issues))
@@ -83,11 +100,11 @@ module Sniffybara
 
     def visit(path)
       super(path)
-      process_accessibility_issues(find_accessibility_issues)
+      process_accessibility_issues
     end
   end
 end
 
 Capybara.register_driver :sniffybara do |app|
-  Sniffybara::Driver.new(app)
+  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app)
 end
