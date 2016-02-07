@@ -1,6 +1,6 @@
 # Sniffybara
 
-Sniffybara is a modified [Selenium](https://rubygems.org/gems/selenium-webdriver/versions/2.50.0) driver for [Capybara](https://github.com/jnicklas/capybara) that scans for 508 accessibility compliance between steps. It uses the [HTML CodeSniffer](https://github.com/squizlabs/HTML_CodeSniffer) to perform accessibility checks.
+Sniffybara is a modified [Poltergeist](https://github.com/teampoltergeist/poltergeist) driver for [Capybara](https://github.com/jnicklas/capybara) that scans for 508 accessibility compliance between steps. It uses the [HTML CodeSniffer](https://github.com/squizlabs/HTML_CodeSniffer) to perform accessibility checks.
 
 ## Installation
 
@@ -13,6 +13,10 @@ gem 'sniffybara', git: 'git@github.com:department-of-veterans-affairs/sniffybara
 Then install the gems:
 
 > $ bundle install
+
+Because Poltergeist uses the headless browser, PhantomJS, you'll need to install that as well
+
+> $ brew install phantomjs
 
 Then, for any files you'd like to be checked for accessibility add the following lines to the top of that file.
 

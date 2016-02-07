@@ -1,4 +1,6 @@
 require "capybara"
+require 'capybara/poltergeist'
+require 'rainbow'
 require 'sinatra/base'
 
 module Sniffybara
@@ -18,7 +20,7 @@ module Sniffybara
     end
   end
 
-  class Driver < Capybara::Selenium::Driver
+  class Driver < Capybara::Poltergeist::Driver
     MESSAGE_TYPES = {
       error: 1,
       warning: 2,
@@ -35,19 +37,29 @@ module Sniffybara
     end
 
     def find_accessibility_issues
-      execute_script(%Q{
-        var htmlcs = document.createElement('script');
-        htmlcs.src = "http://localhost:#{Sniffybara::AssetServer::PORT}/htmlcs.js";
-        htmlcs.async = true;
-        htmlcs.onreadystatechange = htmlcs.onload = function() {
-          window.HTMLCS.process('WCAG2AAA', window.document, function() {
-            window.sniffResults = window.HTMLCS.getMessages();
-          });
-        };
-        document.querySelector('head').appendChild(htmlcs);
-      });
+      execute_script(
+        <<-JS
+          var htmlcs = document.createElement('script');
+          htmlcs.src = "http://localhost:#{Sniffybara::AssetServer::PORT}/htmlcs.js";
+          htmlcs.async = true;
+          htmlcs.onreadystatechange = htmlcs.onload = function() {
+            window.HTMLCS.process('WCAG2AAA', window.document, function() {
+              window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
+                return {
+                  "type": msg.type,
+                  "msg": msg.msg,
+                  "tagName": msg.element.tagName.toLowerCase(),
+                  "id": msg.element.id
+                };
+              }) || [];
+            });
+          };
+          document.querySelector('head').appendChild(htmlcs);
+        JS
+      );
 
-      result = evaluate_script("window.sniffResults") || []
+      # should wait for sniffer to finish via callbacks, but not sure how right now.
+      sleep 0.01 until(result = evaluate_script("window.sniffResults"))
       result
     end
 
@@ -63,9 +75,8 @@ module Sniffybara
       issues.inject("") do |result, issue|
         next result if issue["type"] == MESSAGE_TYPES[:notice]
 
-        element_id = issue["element"].attribute("id")
-        result += "<#{issue["element"].tag_name}"
-        result += element_id.empty? ? ">\n" : " id = '#{element_id}'>\n"
+        result += "<#{issue["tagName"]}"
+        result += issue["id"] ? ">\n" : " id = '#{issue["id"]}'>\n"
         result += "#{issue["msg"]}\n\n"
       end
     end
