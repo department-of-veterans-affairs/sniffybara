@@ -9,8 +9,12 @@ module Sniffybara
     PORT = 9006
     set :port, PORT
 
+    def path_to_htmlcs
+      File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')
+    end
+
     get '/htmlcs.js' do
-      send_file "lib/vendor/HTMLCS.js";
+      send_file path_to_htmlcs
     end
   end
 
@@ -42,7 +46,7 @@ module Sniffybara
         document.querySelector('head').appendChild(htmlcs);
       });
 
-      result = evaluate_script("window.sniffResults") until result
+      result = evaluate_script("window.sniffResults") || []
       result
     end
 
@@ -56,6 +60,8 @@ module Sniffybara
 
     def format_accessibility_issues(issues)
       issues.inject("") do |result, issue|
+        next result if issue["type"] == MESSAGE_TYPES[:notice]
+
         element_id = issue["element"].attribute("id")
         result += "<#{issue["element"].tag_name}"
         result += element_id.empty? ? ">\n" : " id = '#{element_id}'>\n"
