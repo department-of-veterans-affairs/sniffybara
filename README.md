@@ -1,5 +1,7 @@
 # Sniffybara
 
+Effortlessly sniff your web application for accessibility issues!  
+
 Sniffybara is a modified [Poltergeist](https://github.com/teampoltergeist/poltergeist) driver for [Capybara](https://github.com/jnicklas/capybara) that scans for 508 accessibility compliance between steps. It uses the [HTML CodeSniffer](https://github.com/squizlabs/HTML_CodeSniffer) to perform accessibility checks.
 
 ## Installation
