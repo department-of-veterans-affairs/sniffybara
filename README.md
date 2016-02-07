@@ -9,7 +9,7 @@ Sniffybara is a modified [Poltergeist](https://github.com/teampoltergeist/polter
 Sniffybara is not hosted in RubyGems.org right now. In the meantime, import it via git by adding the following file to your `Gemfile`
 
 ```
-gem 'sniffybara', git: 'git@github.com:department-of-veterans-affairs/sniffybara.git'
+gem 'sniffybara', git: 'https://github.com:department-of-veterans-affairs/sniffybara.git'
 ```
 
 Then install the gems:
