@@ -21,13 +21,14 @@ class TestApp < Sinatra::Application
 
   get '/inaccessible' do
     %Q{
+      <html lang="en">
+        <head><title>Accessible page</title></head>
+        <body>
+          <h1>I'm the most accessible page in the universe</h1>
+          <a id="inaccessible-link" href="/inaccessible">Inaccessible</a>
+          <img src="hello.png" class="test"></img>
+        </body>
       <html>
-      <body>
-      Hello there
-        <input type="text"></input>
-        <img src="hello.png"></img>
-      </body>
-      </html>
     }
   end
 end
@@ -49,5 +50,11 @@ describe "Sniffybara" do
   it "raises error when page isn't accessible after click" do
     visit '/accessible'
     expect { click_on "Inaccessible" }.to raise_error(Sniffybara::PageNotAccessibleError)
+  end
+
+  it "allows excpetions" do
+    Sniffybara::Driver.accessibility_code_exceptions << "WCAG2AA.Principle1.Guideline1_1.1_1_1.H37"
+    expect { visit '/inaccessible' }.to_not raise_error
+    Sniffybara::Driver.accessibility_code_exceptions = nil
   end
 end

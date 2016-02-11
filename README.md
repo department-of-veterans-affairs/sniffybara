@@ -27,6 +27,15 @@ require "capybara"
 Capybara.current_driver = :sniffybara
 ```
 
+## Configuration
+
+If you want any accessibility errors to not raise an error, just add them to the exceptions:
+
+```
+Sniffybara::Driver.accessibility_code_exceptions << "WCAG2AA.Principle1.Guideline1_3.1_3_1.F68"
+```
+
+
 ## Contributing
 
 If you're interested in contributing, or have ideas We'd love for you to help! Leave a github issue on the repository or contact @shanear. 
