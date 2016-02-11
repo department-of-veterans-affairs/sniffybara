@@ -64,7 +64,8 @@ module Sniffybara
                   "type": msg.type,
                   "msg": msg.msg,
                   "tagName": msg.element.tagName.toLowerCase(),
-                  "elementId": msg.element.id
+                  "elementId": msg.element.id,
+                  "elementClass": msg.element.className
                 };
               }) || [];
             });
@@ -93,7 +94,8 @@ module Sniffybara
         next result if issue["type"] == MESSAGE_TYPES[:notice]
   
         result += "<#{issue["tagName"]}"
-        result += issue["elementId"] ? " id='#{issue["elementId"]}'>\n" : ">\n"
+        result += (issue["elementClass"] || "").empty? ? "" : " class='#{issue["elementClass"]}'"
+        result += (issue["elementId"] || "").empty? ? ">\n" : " id='#{issue["elementId"]}'>\n"
         result += "#{issue["msg"]}\n\n"
       end
     end
