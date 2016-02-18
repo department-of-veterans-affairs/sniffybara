@@ -24,7 +24,7 @@ Then, for any files you'd like to be checked for accessibility add the following
 
 ```
 require "capybara"
-Capybara.current_driver = :sniffybara
+Capybara.default_driver = :sniffybara
 ```
 
 ## Configuration
