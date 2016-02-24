@@ -38,7 +38,8 @@ module Sniffybara
       def accessibility_code_exceptions
         @accessibility_code_exceptions ||= [
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage",
-          "WCAG2AA.Principle1.Guideline1_4.1_4_3.G145.BgImage"
+          "WCAG2AA.Principle1.Guideline1_4.1_4_3.G145.BgImage",
+          "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Abs"
         ]
       end
     end
