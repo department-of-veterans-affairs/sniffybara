@@ -125,5 +125,7 @@ module Sniffybara
 end
 
 Capybara.register_driver :sniffybara do |app|
+  
+  # without the --disk-cache option enabled, 304 responses show up as blank HTML documents
   Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, :phantomjs_options => ['--disk-cache=true'])
 end
