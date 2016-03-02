@@ -57,4 +57,10 @@ describe "Sniffybara" do
     expect { visit '/inaccessible' }.to_not raise_error
     Sniffybara::Driver.accessibility_code_exceptions = nil
   end
+
+  it "doesn't raise error when page matches filter_out pattern" do
+    Sniffybara::Driver.path_exclusions << /inaccessible/
+    expect { visit '/inaccessible' }.to_not raise_error
+    Sniffybara::Driver.path_exclusions = nil
+  end
 end
