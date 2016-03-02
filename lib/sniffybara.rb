@@ -54,8 +54,8 @@ module Sniffybara
       notice: 3
     }
 
-    def initialize(*args)
-      super(args)
+    def initialize(app, options = {})
+      super(app,options)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
       Capybara::Poltergeist::Node.prepend(NodeOverrides)
