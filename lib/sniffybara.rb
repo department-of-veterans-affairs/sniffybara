@@ -96,11 +96,7 @@ module Sniffybara
     end
 
     def process_accessibility_issues
-      matched_excluded_path_index = Driver.path_exclusions.find_index do |path_pattern|
-        path_pattern =~ current_url
-      end
-
-      return if not matched_excluded_path_index.nil?
+      return if Driver.path_exclusions.any? { |p| p =~ current_url }
 
       issues = find_accessibility_issues
 
