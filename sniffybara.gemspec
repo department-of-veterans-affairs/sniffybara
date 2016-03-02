@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = "sniffybara"
-  s.version     = "0.0.0"
+  s.version     = "0.0.1"
   s.date        = "2016-02-05"
   s.summary     = "Capybara accessibility extention"
   s.description = "Selenium driver for Capybara that checks for 508 Accessibility compliance with HTML CodeSniffer."
