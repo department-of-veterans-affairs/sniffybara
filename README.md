@@ -22,7 +22,7 @@ Because Poltergeist uses the headless browser, PhantomJS, you'll need to install
 
 Then, for any files you'd like to be checked for accessibility add the following lines to the top of that file.
 
-```
+```ruby
 require "capybara"
 Capybara.default_driver = :sniffybara
 ```
@@ -31,8 +31,14 @@ Capybara.default_driver = :sniffybara
 
 If you want any accessibility errors to not raise an error, just add them to the exceptions:
 
-```
+```ruby
 Sniffybara::Driver.accessibility_code_exceptions << "WCAG2AA.Principle1.Guideline1_3.1_3_1.F68"
+```
+
+If you want to completely omit a page from accessibility testing, set the `path_exclusions` option:
+
+```ruby
+Sniffybara::Driver.path_exclusions << /pattern-to-omit/
 ```
 
 
