@@ -34,13 +34,17 @@ module Sniffybara
       attr_accessor :current_driver
 
       # Codes that won't raise errors
-      attr_writer :accessibility_code_exceptions
+      attr_writer :accessibility_code_exceptions, :path_exclusions
       def accessibility_code_exceptions
         @accessibility_code_exceptions ||= [
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage",
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G145.BgImage",
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Abs"
         ]
+      end
+
+      def path_exclusions
+        @path_exclusions ||= []
       end
     end
 
@@ -92,6 +96,12 @@ module Sniffybara
     end
 
     def process_accessibility_issues
+      matched_excluded_path_index = Driver.path_exclusions.find_index do |path_pattern|
+        path_pattern =~ current_url
+      end
+
+      return if not matched_excluded_path_index.nil?
+
       issues = find_accessibility_issues
 
       accessibility_error = format_accessibility_issues(issues)
