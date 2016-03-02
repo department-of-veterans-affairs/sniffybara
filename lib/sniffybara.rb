@@ -125,5 +125,5 @@ module Sniffybara
 end
 
 Capybara.register_driver :sniffybara do |app|
-  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app)
+  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, :phantomjs_options => ['--disk-cache=true'])
 end
