@@ -10,11 +10,11 @@ Gem::Specification.new do |s|
   s.homepage    = ""
   s.license       = ""
 
-  s.add_runtime_dependency "sinatra"
   s.add_runtime_dependency "selenium-webdriver"
   s.add_runtime_dependency "rainbow"
   s.add_runtime_dependency "poltergeist"
 
   s.add_development_dependency "capybara"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "sinatra"
 end

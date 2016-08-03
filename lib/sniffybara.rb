@@ -1,26 +1,10 @@
 require "capybara"
 require 'capybara/poltergeist'
 require 'rainbow'
-require 'sinatra/base'
 
 
 module Sniffybara
   class PageNotAccessibleError < StandardError; end
-
-  # Serves the HTMLCS source file to be dynamically loaded into the page
-  class AssetServer < Sinatra::Application
-    PORT = 9006
-    set :port, PORT
-    set :logging, false
-
-    def path_to_htmlcs
-      File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')
-    end
-
-    get '/htmlcs.js' do
-      send_file path_to_htmlcs
-    end
-  end
 
   module NodeOverrides
     def click
@@ -59,11 +43,6 @@ module Sniffybara
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
       Capybara::Poltergeist::Node.prepend(NodeOverrides)
-
-
-      Thread.new do
-        AssetServer.run!    
-      end
     end
 
     def find_accessibility_issues
