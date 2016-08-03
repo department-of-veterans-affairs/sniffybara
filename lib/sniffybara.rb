@@ -45,11 +45,15 @@ module Sniffybara
       Capybara::Poltergeist::Node.prepend(NodeOverrides)
     end
 
+    def htmlcs_source
+      File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')).to_json
+    end
+
     def find_accessibility_issues
       execute_script(
         <<-JS
           var htmlcs = document.createElement('script');
-          htmlcs.innerHTML = #{File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')).to_json};
+          htmlcs.innerHTML = #{htmlcs_source};
           document.querySelector('head').appendChild(htmlcs);
 
           window.HTMLCS.process('WCAG2AA', window.document, function() {
