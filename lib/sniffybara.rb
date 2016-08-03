@@ -70,23 +70,21 @@ module Sniffybara
       execute_script(
         <<-JS
           var htmlcs = document.createElement('script');
-          htmlcs.src = "http://localhost:#{Sniffybara::AssetServer::PORT}/htmlcs.js";
-          htmlcs.async = true;
-          htmlcs.onreadystatechange = htmlcs.onload = function() {
-            window.HTMLCS.process('WCAG2AA', window.document, function() {
-              window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
-                return {
-                  "type": msg.type,
-                  "code": msg.code,
-                  "msg": msg.msg,
-                  "tagName": msg.element.tagName.toLowerCase(),
-                  "elementId": msg.element.id,
-                  "elementClass": msg.element.className
-                };
-              }) || [];
-            });
-          };
+          htmlcs.innerHTML = #{File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')).to_json};
           document.querySelector('head').appendChild(htmlcs);
+
+          window.HTMLCS.process('WCAG2AA', window.document, function() {
+            window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
+              return {
+                "type": msg.type,
+                "code": msg.code,
+                "msg": msg.msg,
+                "tagName": msg.element.tagName.toLowerCase(),
+                "elementId": msg.element.id,
+                "elementClass": msg.element.className
+              };
+            }) || [];
+          });
         JS
       );
 
