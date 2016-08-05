@@ -1,26 +1,10 @@
 require "capybara"
 require 'capybara/poltergeist'
 require 'rainbow'
-require 'sinatra/base'
 
 
 module Sniffybara
   class PageNotAccessibleError < StandardError; end
-
-  # Serves the HTMLCS source file to be dynamically loaded into the page
-  class AssetServer < Sinatra::Application
-    PORT = 9006
-    set :port, PORT
-    set :logging, false
-
-    def path_to_htmlcs
-      File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')
-    end
-
-    get '/htmlcs.js' do
-      send_file path_to_htmlcs
-    end
-  end
 
   module NodeOverrides
     def click
@@ -59,34 +43,31 @@ module Sniffybara
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
       Capybara::Poltergeist::Node.prepend(NodeOverrides)
+    end
 
-
-      Thread.new do
-        AssetServer.run!    
-      end
+    def htmlcs_source
+      File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')).to_json
     end
 
     def find_accessibility_issues
       execute_script(
         <<-JS
           var htmlcs = document.createElement('script');
-          htmlcs.src = "http://localhost:#{Sniffybara::AssetServer::PORT}/htmlcs.js";
-          htmlcs.async = true;
-          htmlcs.onreadystatechange = htmlcs.onload = function() {
-            window.HTMLCS.process('WCAG2AA', window.document, function() {
-              window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
-                return {
-                  "type": msg.type,
-                  "code": msg.code,
-                  "msg": msg.msg,
-                  "tagName": msg.element.tagName.toLowerCase(),
-                  "elementId": msg.element.id,
-                  "elementClass": msg.element.className
-                };
-              }) || [];
-            });
-          };
+          htmlcs.innerHTML = #{htmlcs_source};
           document.querySelector('head').appendChild(htmlcs);
+
+          window.HTMLCS.process('WCAG2AA', window.document, function() {
+            window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
+              return {
+                "type": msg.type,
+                "code": msg.code,
+                "msg": msg.msg,
+                "tagName": msg.element.tagName.toLowerCase(),
+                "elementId": msg.element.id,
+                "elementClass": msg.element.className
+              };
+            }) || [];
+          });
         JS
       );
 
