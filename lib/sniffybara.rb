@@ -92,7 +92,8 @@ module Sniffybara
           result += "#{node["target"]}\n\n"
         end
 
-        result += "Issue ID: #{issue["id"]}\n\n"
+        result += "Issue ID: #{issue["id"]}\n"
+        result += "More Info: #{issue["helpUrl"]}\n\n"
 
       end
     end
