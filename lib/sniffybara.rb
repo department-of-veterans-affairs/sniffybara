@@ -88,8 +88,8 @@ module Sniffybara
         end
 
         result += "Issue ID: #{issue["id"]}\n"
+        result += "Impact: #{issue["impact"]}\n"
         result += "More Info: #{issue["helpUrl"]}\n\n"
-
       end
     end
 
