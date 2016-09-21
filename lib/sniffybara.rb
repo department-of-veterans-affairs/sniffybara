@@ -18,9 +18,9 @@ module Sniffybara
       attr_accessor :current_driver
 
       # Codes that won't raise errors
-      attr_writer :accessibility_code_exceptions, :path_exclusions
-      def accessibility_code_exceptions
-        @accessibility_code_exceptions ||= [
+      attr_writer :issue_id_exceptions, :path_exclusions
+      def issue_id_exceptions
+        @issue_id_exceptions ||= [
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage",
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G145.BgImage",
           "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Abs"
@@ -31,12 +31,6 @@ module Sniffybara
         @path_exclusions ||= []
       end
     end
-
-    MESSAGE_TYPES = {
-      error: 1,
-      warning: 2,
-      notice: 3
-    }
 
     def initialize(app, options = {})
       super(app,options)
@@ -49,24 +43,19 @@ module Sniffybara
       File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/HTMLCS.js')).to_json
     end
 
+    def axe_source
+      File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/axe.min.js')).to_json
+    end
+
     def find_accessibility_issues
       execute_script(
         <<-JS
-          var htmlcs = document.createElement('script');
-          htmlcs.innerHTML = #{htmlcs_source};
-          document.querySelector('head').appendChild(htmlcs);
+          var axeContainer = document.createElement('script');
+          axeContainer.innerHTML = #{axe_source};
+          document.querySelector('head').appendChild(axeContainer);
 
-          window.HTMLCS.process('WCAG2AA', window.document, function() {
-            window.sniffResults = window.HTMLCS.getMessages().map(function(msg) {
-              return {
-                "type": msg.type,
-                "code": msg.code,
-                "msg": msg.msg,
-                "tagName": msg.element.tagName.toLowerCase(),
-                "elementId": msg.element.id,
-                "elementClass": msg.element.className
-              };
-            }) || [];
+          window.axe.a11yCheck(window.document, function(results) {
+            window.sniffResults = results["violations"];
           });
         JS
       );
@@ -85,16 +74,26 @@ module Sniffybara
       fail PageNotAccessibleError.new(accessibility_error) unless accessibility_error.empty?
     end
 
+    def blocking?(issue)
+      !["moderate", "serious", "critical"].include?(issue["impact"])
+    end
+
     def format_accessibility_issues(issues)
       issues.inject("") do |result, issue|
-        next result if issue["type"] == MESSAGE_TYPES[:notice]
-        next result if Sniffybara::Driver.accessibility_code_exceptions.include?(issue["code"])
-  
-        result += "<#{issue["tagName"]}"
-        result += (issue["elementClass"] || "").empty? ? "" : " class='#{issue["elementClass"]}'"
-        result += (issue["elementId"] || "").empty? ? ">\n" : " id='#{issue["elementId"]}'>\n"
-        result += "#{issue["code"]}\n"
-        result += "#{issue["msg"]}\n\n"
+        next result if blocking?(issue)
+        next result if Sniffybara::Driver.issue_id_exceptions.include?(issue["id"])
+
+
+        result += "#{issue["help"]}\n\n"
+
+        result += "Elements:\n"
+        issue["nodes"].each do |node|
+          result += "#{node["html"]}\n"
+          result += "#{node["target"]}\n\n"
+        end
+
+        result += "Issue ID: #{issue["id"]}\n\n"
+
       end
     end
 
