@@ -20,11 +20,7 @@ module Sniffybara
       # Codes that won't raise errors
       attr_writer :issue_id_exceptions, :path_exclusions
       def issue_id_exceptions
-        @issue_id_exceptions ||= [
-          "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.BgImage",
-          "WCAG2AA.Principle1.Guideline1_4.1_4_3.G145.BgImage",
-          "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Abs"
-        ]
+        @issue_id_exceptions ||= []
       end
 
       def path_exclusions
@@ -82,7 +78,6 @@ module Sniffybara
       issues.inject("") do |result, issue|
         next result if blocking?(issue)
         next result if Sniffybara::Driver.issue_id_exceptions.include?(issue["id"])
-
 
         result += "#{issue["help"]}\n\n"
 
