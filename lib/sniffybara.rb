@@ -59,7 +59,7 @@ module Sniffybara
           document.querySelector('head').appendChild(axeContainer);
 
           #{configuration_js}
-          window.axe.a11yCheck(window.document, function(results) {
+          window.axe.a11yCheck({exclude: ['iframe']}, function(results) {
             window.sniffResults = results["violations"];
           });
         JS
