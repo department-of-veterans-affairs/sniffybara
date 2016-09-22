@@ -80,12 +80,12 @@ module Sniffybara
     end
 
     def blocking?(issue)
-      !["moderate", "serious", "critical"].include?(issue["impact"])
+      ["moderate", "serious", "critical"].include?(issue["impact"])
     end
 
     def format_accessibility_issues(issues)
       issues.inject("") do |result, issue|
-        next result if blocking?(issue)
+        next result unless blocking?(issue)
         next result if Sniffybara::Driver.issue_id_exceptions.include?(issue["id"])
 
         result += "#{issue["help"]}\n\n"
