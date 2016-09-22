@@ -58,6 +58,12 @@ describe "Sniffybara" do
     Sniffybara::Driver.issue_id_exceptions = nil
   end
 
+  it "allows configuration from a json file" do
+    Sniffybara::Driver.configuration_file = File.expand_path("spec/support/sample-axe-config.json")
+    expect { visit '/inaccessible' }.to_not raise_error
+    Sniffybara::Driver.configuration_file = nil
+  end
+
   it "doesn't raise error when page matches filter_out pattern" do
     Sniffybara::Driver.path_exclusions << /inaccessible/
     expect { visit '/inaccessible' }.to_not raise_error
