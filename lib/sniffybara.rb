@@ -7,8 +7,12 @@ module Sniffybara
 
   module NodeOverrides
     def click
+      old_url = Sniffybara::Driver.current_driver.current_url
       super
-      Sniffybara::Driver.current_driver.process_accessibility_issues
+
+      if old_url != Sniffybara::Driver.current_driver.current_url
+        Sniffybara::Driver.current_driver.process_accessibility_issues
+      end
     end
   end
 
