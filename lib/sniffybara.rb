@@ -54,11 +54,15 @@ module Sniffybara
     def find_accessibility_issues
       execute_script(
         <<-JS
-          var axeContainer = document.createElement('script');
-          axeContainer.innerHTML = #{axe_source};
-          document.querySelector('head').appendChild(axeContainer);
+          if(!window.axe) {
+            var axeContainer = document.createElement('script');
+            axeContainer.innerHTML = #{axe_source};
+            document.querySelector('head').appendChild(axeContainer);
 
-          #{configuration_js}
+            #{configuration_js}
+          }
+
+
           window.axe.a11yCheck({exclude: ['iframe']}, function(results) {
             window.sniffResults = results["violations"];
           });
