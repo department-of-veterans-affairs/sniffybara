@@ -75,11 +75,26 @@ module Sniffybara
 
     def process_accessibility_issues
       return if Driver.path_exclusions.any? { |p| p =~ current_url }
+      return if url_already_scanned?
 
       issues = find_accessibility_issues
 
       accessibility_error = format_accessibility_issues(issues)
       fail PageNotAccessibleError.new(accessibility_error) unless accessibility_error.empty?
+
+      record_scanned_url!
+    end
+
+    def scanned_urls
+      @scanned_urls ||= []
+    end
+
+    def url_already_scanned?
+      scanned_urls.include?(current_url)
+    end
+
+    def record_scanned_url!
+      scanned_urls << current_url
     end
 
     def blocking?(issue)
