@@ -1,5 +1,4 @@
 require "capybara"
-require 'capybara/poltergeist'
 require 'rainbow'
 
 module Sniffybara
@@ -12,7 +11,7 @@ module Sniffybara
     end
   end
 
-  class Driver < Capybara::Poltergeist::Driver
+  class Driver < Capybara::Selenium::Driver
     class << self
       attr_accessor :current_driver, :configuration_file
 
@@ -31,7 +30,7 @@ module Sniffybara
       super(app,options)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
-      Capybara::Poltergeist::Node.prepend(NodeOverrides)
+      Capybara::Selenium::Node.prepend(NodeOverrides)
     end
 
     def htmlcs_source
@@ -114,7 +113,5 @@ module Sniffybara
 end
 
 Capybara.register_driver :sniffybara do |app|
-  
-  # without the --disk-cache option enabled, 304 responses show up as blank HTML documents
-  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, :phantomjs_options => ['--disk-cache=true'])
+  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, browser: :chrome)
 end
