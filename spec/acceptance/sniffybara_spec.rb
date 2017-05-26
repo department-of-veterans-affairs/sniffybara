@@ -38,7 +38,7 @@ Capybara.current_driver = :sniffybara
 
 describe "Sniffybara" do
   include Capybara::DSL
-  
+
   it "doesn't raise error when page is accessible" do
     expect{ visit '/accessible' }.to_not raise_error
   end
@@ -53,9 +53,15 @@ describe "Sniffybara" do
   end
 
   it "allows excpetions" do
-    Sniffybara::Driver.accessibility_code_exceptions << "WCAG2AA.Principle1.Guideline1_1.1_1_1.H37"
+    Sniffybara::Driver.issue_id_exceptions << "image-alt"
     expect { visit '/inaccessible' }.to_not raise_error
-    Sniffybara::Driver.accessibility_code_exceptions = nil
+    Sniffybara::Driver.issue_id_exceptions = nil
+  end
+
+  it "allows configuration from a json file" do
+    Sniffybara::Driver.configuration_file = File.expand_path("spec/support/sample-axe-config.json")
+    expect { visit '/inaccessible' }.to_not raise_error
+    Sniffybara::Driver.configuration_file = nil
   end
 
   it "doesn't raise error when page matches filter_out pattern" do
