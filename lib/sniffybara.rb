@@ -33,7 +33,7 @@ module Sniffybara
           args: %w[ no-sandbox headless disable-gpu window-size=100,100]
         }
       )
-      super(app,options,desired_capabilities)
+      super(app,options)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
       Capybara::Selenium::Node.prepend(NodeOverrides)
