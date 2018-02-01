@@ -26,7 +26,13 @@ module Sniffybara
       end
     end
 
-    def initialize(app, options = {}, desired_capabilities = {})
+    def initialize(app, options = {})
+
+      desired_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+        chromeOptions: {
+          args: %w[ no-sandbox headless disable-gpu window-size=100,100]
+        }
+      )
       super(app,options,desired_capabilities)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
@@ -128,5 +134,11 @@ module Sniffybara
 end
 
 Capybara.register_driver :sniffybara do |app|
+
+  desired_capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
+    chromeOptions: {
+      args: %w[ no-sandbox headless disable-gpu window-size=100,100]
+    }
+  )
   Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, browser: :chrome)
 end
