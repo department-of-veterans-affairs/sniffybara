@@ -26,7 +26,7 @@ module Sniffybara
       end
     end
 
-    def initialize(app, options = {}, desired_capabilities)
+    def initialize(app, options = {}, desired_capabilities = {})
       super(app,options,desired_capabilities)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
