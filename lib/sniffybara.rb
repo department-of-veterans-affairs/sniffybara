@@ -27,8 +27,11 @@ module Sniffybara
     end
 
     def initialize(app, options = {})
+      puts "initialize 1"
       super(app,options)
+      puts "initialize 2"
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
+      puts "initialize 3"
 
       Capybara::Selenium::Node.prepend(NodeOverrides)
     end
