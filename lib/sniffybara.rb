@@ -1,5 +1,4 @@
 require "capybara"
-require 'capybara/poltergeist'
 require 'rainbow'
 
 module Sniffybara
@@ -16,7 +15,7 @@ module Sniffybara
     end
   end
 
-  class Driver < Capybara::Poltergeist::Driver
+  class Driver < Capybara::Selenium::Driver
     class << self
       attr_accessor :current_driver, :configuration_file
 
@@ -35,7 +34,7 @@ module Sniffybara
       super(app,options)
       puts Rainbow("\nAll visited screens will be scanned for 508 accessibility compliance.").cyan
 
-      Capybara::Poltergeist::Node.prepend(NodeOverrides)
+      Capybara::Selenium::Node.prepend(NodeOverrides)
     end
 
     def htmlcs_source
@@ -80,11 +79,26 @@ module Sniffybara
 
     def process_accessibility_issues
       return if Driver.path_exclusions.any? { |p| p =~ current_url }
+      return if url_already_scanned?
 
       issues = find_accessibility_issues
 
       accessibility_error = format_accessibility_issues(issues)
       fail PageNotAccessibleError.new(accessibility_error) unless accessibility_error.empty?
+
+      record_scanned_url!
+    end
+
+    def scanned_urls
+      @scanned_urls ||= []
+    end
+
+    def url_already_scanned?
+      scanned_urls.include?(current_url)
+    end
+
+    def record_scanned_url!
+      scanned_urls << current_url
     end
 
     def blocking?(issue)
@@ -118,7 +132,5 @@ module Sniffybara
 end
 
 Capybara.register_driver :sniffybara do |app|
-  
-  # without the --disk-cache option enabled, 304 responses show up as blank HTML documents
-  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, :phantomjs_options => ['--disk-cache=true'])
+  Sniffybara::Driver.current_driver = Sniffybara::Driver.new(app, browser: :chrome)
 end
