@@ -78,11 +78,16 @@ module Sniffybara
     end
 
     def process_accessibility_issues
+      puts "in process_accessibility_issues()"
       return if Driver.path_exclusions.any? { |p| p =~ current_url }
 
+      puts "before find_accessibility_issues()"
       issues = find_accessibility_issues
 
+      puts "before format_accessibility_issues()"
       accessibility_error = format_accessibility_issues(issues)
+
+      puts "before fail PageNotAccessibleError unless accessibility_error.empty? #{accessibility_error.empty?}"
       fail PageNotAccessibleError.new(accessibility_error) unless accessibility_error.empty?
     end
 
@@ -110,8 +115,13 @@ module Sniffybara
     end
 
     def visit(path)
+      puts "in Sniffybara::Driver.visit()"
       super(path)
+
+      puts "after super()"
       process_accessibility_issues
+
+      puts "after process_accessibility_issues()"
     end
   end
 end
