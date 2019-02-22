@@ -5,7 +5,7 @@ module Sniffybara
   class PageNotAccessibleError < StandardError; end
 
   module NodeOverrides
-    def click
+    def click(*keys, wait: nil, **offset)
       super
       Sniffybara::Driver.current_driver.process_accessibility_issues
     end
