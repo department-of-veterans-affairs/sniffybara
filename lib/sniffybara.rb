@@ -1,4 +1,4 @@
-require "capybara"
+require 'capybara'
 require 'rainbow'
 
 module Sniffybara
@@ -62,8 +62,8 @@ module Sniffybara
           }
 
 
-          window.axe.a11yCheck({exclude: ['iframe']}, function(results) {
-            window.sniffResults = results["violations"];
+          window.axe.run(function(err, results) {
+            window.sniffResults = results.violations;
           });
         JS
       );
