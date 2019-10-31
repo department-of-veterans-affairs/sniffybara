@@ -12,8 +12,10 @@ class TestApp < Sinatra::Application
       <html lang="en">
         <head><title>Accessible page</title></head>
         <body>
-          <h1>I'm the most accessible page in the universe</h1>
-          <a id="inaccessible-link" href="/inaccessible">Inaccessible</a>
+          <main>
+            <h1>I'm the most accessible page in the universe</h1>
+            <a id="inaccessible-link" href="/inaccessible">Inaccessible</a>
+          </main>
         </body>
       <html>
     }
@@ -24,9 +26,11 @@ class TestApp < Sinatra::Application
       <html lang="en">
         <head><title>Accessible page</title></head>
         <body>
-          <h1>I'm the most accessible page in the universe</h1>
-          <a id="inaccessible-link" href="/inaccessible">Inaccessible</a>
-          <img src="hello.png" class="test"></img>
+          <main>
+            <h1>I'm the most accessible page in the universe</h1>
+            <a id="inaccessible-link" href="/inaccessible">Inaccessible</a>
+            <img src="hello.png" class="test"></img>
+          </main>
         </body>
       <html>
     }
@@ -49,7 +53,7 @@ describe "Sniffybara" do
 
   it "raises error when page isn't accessible after click" do
     visit '/accessible'
-    expect { click_on "Inaccessible" }.to raise_error(Sniffybara::PageNotAccessibleError)
+    expect { click_link "Inaccessible" }.to raise_error(Sniffybara::PageNotAccessibleError)
   end
 
   it "allows excpetions" do
