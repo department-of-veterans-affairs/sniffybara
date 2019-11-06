@@ -5,7 +5,7 @@ require 'capybara/dsl'
 require 'sniffybara'
 
 class TestApp < Sinatra::Application
-  set :logging, true
+  set :logging, false
 
   get '/accessible' do
     %q{
