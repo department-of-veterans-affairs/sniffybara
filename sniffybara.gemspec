@@ -1,9 +1,9 @@
 Gem::Specification.new do |s|
   s.name        = "sniffybara"
-  s.version     = "0.0.1"
-  s.date        = "2016-02-05"
+  s.version     = "1.0.0"
+  s.date        = "2019-11-13"
   s.summary     = "Capybara accessibility extention"
-  s.description = "Selenium driver for Capybara that checks for 508 Accessibility compliance with HTML CodeSniffer."
+  s.description = "Selenium driver for Capybara that uses the Axe accessibility testing engine v3.0.4"
   s.authors     = ["Shane Russell"]
   s.email       = "shane1337@gmail.com"
   s.files       = ["lib/sniffybara.rb"]
@@ -16,4 +16,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "capybara"
   s.add_development_dependency "rspec"
   s.add_development_dependency "sinatra"
+  s.add_development_dependency "webdrivers"
+  s.add_development_dependency "puma"
 end
