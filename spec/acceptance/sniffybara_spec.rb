@@ -48,7 +48,7 @@ describe "Sniffybara" do
       window.axe = null;
     EOS
   end
-  
+
   it "doesn't raise error when page is accessible" do
     expect{ visit '/accessible' }.to_not raise_error
   end
@@ -78,5 +78,11 @@ describe "Sniffybara" do
     Sniffybara::Driver.path_exclusions << /inaccessible/
     expect { visit '/inaccessible#3' }.to_not raise_error
     Sniffybara::Driver.path_exclusions = nil
+  end
+
+  it "allows run configuration from a json file" do
+    Sniffybara::Driver.run_configuration_file = File.expand_path("spec/support/sample-axe-run-config.json")
+    expect { visit '/inaccessible#4' }.to_not raise_error
+    Sniffybara::Driver.run_configuration_file = nil
   end
 end
