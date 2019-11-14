@@ -1,11 +1,12 @@
-require "capybara"
+require 'capybara'
 require 'rainbow'
+require 'webdrivers'
 
 module Sniffybara
   class PageNotAccessibleError < StandardError; end
 
   module NodeOverrides
-    def click
+    def click(*args)
       super
       Sniffybara::Driver.current_driver.process_accessibility_issues
     end
@@ -62,8 +63,8 @@ module Sniffybara
           }
 
 
-          window.axe.a11yCheck({exclude: ['iframe']}, function(results) {
-            window.sniffResults = results["violations"];
+          window.axe.run(function(err, results) {
+            window.sniffResults = results.violations;
           });
         JS
       );
