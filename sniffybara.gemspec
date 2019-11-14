@@ -4,8 +4,8 @@ Gem::Specification.new do |s|
   s.date        = "2019-11-13"
   s.summary     = "Capybara accessibility extention"
   s.description = "Selenium driver for Capybara that uses the Axe accessibility testing engine v3.0.4"
-  s.authors     = ["Shane Russell"]
-  s.email       = "shane1337@gmail.com"
+  s.authors     = ["Shane Russell", "Alisa Nguyen"]
+  s.email       = "alisanguyen@navapbc.com"
   s.files       = ["lib/sniffybara.rb"]
   s.homepage    = ""
   s.license       = ""

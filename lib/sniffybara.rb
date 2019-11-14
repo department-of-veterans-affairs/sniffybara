@@ -1,5 +1,6 @@
 require 'capybara'
 require 'rainbow'
+require 'webdrivers'
 
 module Sniffybara
   class PageNotAccessibleError < StandardError; end
