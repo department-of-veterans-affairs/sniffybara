@@ -29,6 +29,8 @@ Capybara.default_driver = :sniffybara
 
 ## Configuration
 
+It is recommended that you use the run_configuration_file to pass in options for Axe.run() following the format specified in the [Axe API](https://github.com/dequelabs/axe-core/blob/72f0187dc8f534788fc0eb99a9ce48cd42a7923a/doc/API.md#options-parameter)
+
 If you want any accessibility errors to not raise an error, just add them to the exceptions:
 
 ```ruby
