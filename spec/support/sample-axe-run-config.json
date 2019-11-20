@@ -1,8 +1,7 @@
 {
-  "rules": [
-    {
-      "id": "image-alt",
-      "enabled": false
-    }
-  ],
+  "rules":{
+    "image-alt": {
+      "enabled": false,
+    },
+  },
 }

@@ -13,7 +13,7 @@ module Sniffybara
 
   class Driver < Capybara::Selenium::Driver
     class << self
-      attr_accessor :current_driver, :configuration_file, :run_configuration_file
+      attr_accessor :current_driver, :run_configuration_file
 
       # Codes that won't raise errors
       attr_writer :issue_id_exceptions, :path_exclusions
@@ -41,13 +41,6 @@ module Sniffybara
       File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/axe.min.js')).to_json
     end
 
-    def configuration_js
-      return "" unless Driver.configuration_file && File.exist?(Driver.configuration_file)
-      <<-JS
-        window.axe.configure(#{File.read(Driver.configuration_file)});
-      JS
-    end
-
     def run_configuration
       return "null" unless Driver.run_configuration_file && File.exist?(Driver.run_configuration_file)
       File.read(Driver.run_configuration_file)
@@ -60,8 +53,6 @@ module Sniffybara
             var axeContainer = document.createElement('script');
             axeContainer.innerHTML = #{axe_source};
             document.querySelector('head').appendChild(axeContainer);
-
-            #{configuration_js}
           }
 
           var runConfig = #{run_configuration}
