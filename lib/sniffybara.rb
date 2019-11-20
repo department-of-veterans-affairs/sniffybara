@@ -14,7 +14,7 @@ module Sniffybara
 
   class Driver < Capybara::Selenium::Driver
     class << self
-      attr_accessor :current_driver, :configuration_file
+      attr_accessor :current_driver, :run_configuration_file
 
       # Codes that won't raise errors
       attr_writer :issue_id_exceptions, :path_exclusions
@@ -42,13 +42,9 @@ module Sniffybara
       File.read(File.join(File.dirname(File.expand_path(__FILE__)), 'vendor/axe.min.js')).to_json
     end
 
-    def configuration_js
-      return "" unless Driver.configuration_file && File.exist?(Driver.configuration_file)
-
-      <<-JS
-        var axeConfiguration = #{File.read(Driver.configuration_file)}
-        window.axe.configure(axeConfiguration);
-      JS
+    def run_configuration
+      return "null" unless Driver.run_configuration_file && File.exist?(Driver.run_configuration_file)
+      File.read(Driver.run_configuration_file)
     end
 
     def find_accessibility_issues
@@ -58,14 +54,22 @@ module Sniffybara
             var axeContainer = document.createElement('script');
             axeContainer.innerHTML = #{axe_source};
             document.querySelector('head').appendChild(axeContainer);
-
-            #{configuration_js}
           }
 
-
-          window.axe.run(function(err, results) {
-            window.sniffResults = results.violations;
-          });
+          var runConfig = #{run_configuration}
+          if(runConfig) {
+            window.axe.run(runConfig, function(err, results) {
+              if (results) {
+                window.sniffResults = results.violations;
+              }
+            });
+          } else {
+            window.axe.run(function(err, results) {
+              if (results) {
+                window.sniffResults = results.violations;
+              }
+            });
+          }
         JS
       );
 
