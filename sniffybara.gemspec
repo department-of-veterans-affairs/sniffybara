@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = ""
   s.license       = ""
 
-  s.add_runtime_dependency "selenium-webdriver"
+  s.add_runtime_dependency "selenium-webdriver", "~> 4.8.1"
   s.add_runtime_dependency "rainbow"
 
   s.add_development_dependency "capybara"
